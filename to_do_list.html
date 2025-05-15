@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ebebeb;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 15px;
+            max-width: 800px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(78, 34, 34, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 50%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+
+        #add-task-btn {
+            display: none;
+        }
+
+        #task-form {
+            margin-top: 10px;
+            display: none;
+        }
+
+        #tasks {
+            margin-top: 20px;
+        }
+
+        .task {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* the check button */
+        .task button {
+            margin-left: 15px;
+            background-color: #a6c2dd;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.8s ease;
+        }
+
+        .task button:hover {
+            background-color: #8cadcc;
+        }
+
+        /* New item and Add task */
+        button {
+            background-color: #5B9BD5;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #4a8bc5;
+        }
+                
+        /* Urgency color code */
+        .low {
+            background-color: #dff0d8; /* soft green */
+        }
+
+        .medium {
+            background-color: #fcf1e3; /* soft orangy-beigy-yellowish */
+        }
+
+        .high {
+            background-color: #fce8e8; /* soft redish pinkish */
+        }
+
+
+
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+
+        <div id="empty-message">No tasks to display.</div>
+        
+        <div id="tasks"></div>
+
+        <div id="task-form">
+        <label for="task-name">Task name:</label>
+        <input type="text" id="task-name" placeholder="Enter task name" />
+
+        <label for="urgency">Urgency:</label>
+        <select id="urgency">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        </div>
+
+    
+        <button id="add-task-btn" class="button">Add Task</button>
+        <br>
+        <button id="new-item-btn" class="button">New Item</button>
+
+        <button id="cancel-task-btn" style="display: none;">Cancel</button>
+
+        <audio id="success_sound" src="unlock.mp3" preload="auto"></audio>
+
+
+
+    
+    </div>
+
+    <script>
+        const newItemBtn = document.getElementById('new-item-btn');
+        const taskForm = document.getElementById('task-form');
+        const taskNameInput = document.getElementById('task-name');
+        const urgencySelect = document.getElementById('urgency');
+        const addTaskBtn = document.getElementById('add-task-btn');
+        const tasksDiv = document.getElementById('tasks');
+        const emptyMessage = document.getElementById('empty-message');
+        const success_sound = document.getElementById('success_sound');
+
+        newItemBtn.addEventListener('click', () => {
+            taskForm.style.display = 'block';
+            addTaskBtn.style.display = 'inline-block';
+            cancelTaskBtn.style.display = 'inline-block';
+            newItemBtn.style.display = 'none';
+        });
+
+        const cancelTaskBtn = document.getElementById('cancel-task-btn');
+
+        cancelTaskBtn.addEventListener('click', () => {
+            taskForm.style.display = 'none';
+            addTaskBtn.style.display = 'none';
+            cancelTaskBtn.style.display = 'none'; 
+            newItemBtn.style.display = 'inline-block';
+            taskNameInput.value = '';
+        });
+
+
+
+        addTaskBtn.addEventListener('click', () => {
+            const taskName = taskNameInput.value.trim();
+            const urgency = urgencySelect.value;
+
+            if (taskName !== '') {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task';
+                taskItem.classList.add(urgency)
+
+                const taskText = document.createElement('span');
+                taskText.textContent = ` • ${taskName}`;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = ' ✔️ '; // ❌ ✅
+                deleteBtn.style.marginLeft = '10px';
+                deleteBtn.addEventListener('click', () => {
+                taskItem.remove();
+                success_sound.play()
+
+                if (tasksDiv.children.length === 0) {
+                    emptyMessage.style.display = 'block';
+                }
+                });
+
+                taskItem.appendChild(taskText);
+                taskItem.appendChild(deleteBtn);
+                tasksDiv.appendChild(taskItem);
+
+                taskNameInput.value = '';
+                taskForm.style.display = 'none';
+                addTaskBtn.style.display = 'none';
+                cancelTaskBtn.style.display = 'none';
+                newItemBtn.style.display = 'inline-block';
+                emptyMessage.style.display = 'none';
+            }
+        });
+            
+    </script>
+</body>
+</html>
